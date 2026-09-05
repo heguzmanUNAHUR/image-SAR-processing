@@ -16,7 +16,9 @@ ENV/
 .idea/
 
 # Datos satelitales pesados y temporales intermedios (GeoTIFFs y respaldos)
+*.tif
 *.tif.backup
+complete_image.csv
 aligned_temp/
 
 # Archivos de SO

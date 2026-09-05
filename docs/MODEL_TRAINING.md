@@ -39,7 +39,7 @@ Para evitar la sobreestimacion del rendimiento debida a la autocorrelacion espac
 2. **Asignacion de Grupos**:
    - **Entrenamiento y Validacion Interna**: Se seleccionan los 2 poligonos mas grandes de cada clase (Q1, Q2, NQ1, NQ2) para maximizar la variabilidad espectral en el entrenamiento.
    - **Conjunto de Prueba Espacial Final**: Se asignan los poligonos mas pequenos de cada clase (Q3, NQ3) exclusivamente para la evaluacion final sin contacto previo durante la optimizacion de modelos.
-3. **Escalado de Caracteristicas**: `StandardScaler` se ajusta (`fit`) **unicamente** con las muestras de `X_train`. Las muestras de `X_test` y `X_holdout` (conjunto de prueba) se transforman utilizando la media y desviacion estandar del entrenamiento.
+3. **Escalado de Caracteristicas**: `StandardScaler` se ajusta (`fit`) **unicamente** con las muestras de `X_train`. Las muestras del conjunto de prueba espacial se transforman utilizando la media y desviacion estandar del entrenamiento.
 
 ---
 

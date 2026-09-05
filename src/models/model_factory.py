@@ -273,3 +273,117 @@ def guardar_modelo_y_artefactos(resultado, scaler, carpeta_destino, feature_name
         X_test=resultado['X_test'],
         y_test=resultado['y_test']
     )
+
+
+def crear_interfaz_seleccion_modelos_metricas(ruta_csv, headless=False):
+    """
+    Crea una interfaz grafica Tkinter para seleccionar modelos desde el CSV de metricas guardadas.
+    En entorno headless/sin pantalla, retorna todos los modelos disponibles en el CSV.
+    """
+    import pandas as pd
+
+    if not os.path.exists(ruta_csv):
+        print(f"[ERROR] El archivo de metricas no existe en: {ruta_csv}")
+        return []
+
+    try:
+        df = pd.read_csv(ruta_csv)
+    except Exception as e:
+        print(f"[ERROR] Error al leer CSV de metricas: {e}")
+        return []
+
+    if headless:
+        print(f"[INFO] Modo sin GUI. Seleccionando todos los modelos del CSV de metricas ({len(df)} modelos).")
+        return df.to_dict('records')
+
+    try:
+        ventana = tk.Tk()
+        ventana.title("Seleccion de Modelos - Analisis de Metricas")
+        ventana.geometry("1000x600")
+        ventana.resizable(True, True)
+    except Exception as e:
+        print(f"[WARNING] Entorno sin pantalla detectado ({e}). Seleccionando todos los modelos del CSV.")
+        return df.to_dict('records')
+
+    modelos_seleccionados = []
+
+    def confirmar_seleccion():
+        for i, var in enumerate(variables_checkbox):
+            if var.get():
+                modelos_seleccionados.append(df.iloc[i].to_dict())
+
+        if not modelos_seleccionados:
+            messagebox.showwarning("Advertencia", "Debes seleccionar al menos un modelo")
+            return
+
+        ventana.destroy()
+
+    def toggle_todos():
+        estado = variables_checkbox[0].get()
+        for var in variables_checkbox:
+            var.set(not estado)
+
+    titulo = tk.Label(ventana, text="Selecciona los modelos a evaluar en la escena completa:",
+                     font=("Arial", 14, "bold"))
+    titulo.pack(pady=15)
+
+    frame_principal = ttk.Frame(ventana)
+    frame_principal.pack(fill=tk.BOTH, expand=True, padx=15, pady=10)
+
+    canvas = tk.Canvas(frame_principal)
+    scrollbar = ttk.Scrollbar(frame_principal, orient="vertical", command=canvas.yview)
+    scrollable_frame = ttk.Frame(canvas)
+
+    scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    btn_toggle = tk.Button(scrollable_frame, text="Seleccionar/Deseleccionar Todo",
+                          command=toggle_todos, bg="#4CAF50", fg="white",
+                          font=("Arial", 10, "bold"))
+    btn_toggle.pack(pady=(0, 15))
+
+    variables_checkbox = []
+    for i, row in df.iterrows():
+        var = tk.BooleanVar(value=True)
+        variables_checkbox.append(var)
+
+        frame_row = tk.Frame(scrollable_frame)
+        frame_row.pack(fill=tk.X, pady=3, padx=5)
+
+        cb = tk.Checkbutton(frame_row, text=f"{row['Modelo']}", variable=var, font=("Arial", 10, "bold"))
+        cb.pack(side=tk.LEFT)
+
+        acc = row.get('Accuracy', 0)
+        f1 = row.get('F1_Score', 0)
+        prec = row.get('Precision', 0)
+        lbl_txt = f"  (Accuracy: {acc:.4f} | F1: {f1:.4f} | Precision: {prec:.4f})"
+        lbl = tk.Label(frame_row, text=lbl_txt, font=("Arial", 9))
+        lbl.pack(side=tk.LEFT, padx=10)
+
+        ttk.Separator(scrollable_frame, orient='horizontal').pack(fill=tk.X, pady=2)
+
+    frame_botones = tk.Frame(ventana)
+    frame_botones.pack(pady=15)
+
+    btn_confirmar = tk.Button(frame_botones, text="Confirmar Seleccion",
+                             command=confirmar_seleccion, bg="#2196F3", fg="white",
+                             font=("Arial", 11, "bold"), width=15)
+    btn_confirmar.pack(side=tk.LEFT, padx=10)
+
+    btn_cancelar = tk.Button(frame_botones, text="Cancelar",
+                            command=ventana.destroy, bg="#f44336", fg="white",
+                            font=("Arial", 11, "bold"), width=15)
+    btn_cancelar.pack(side=tk.LEFT, padx=10)
+
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    ventana.update_idletasks()
+    x = (ventana.winfo_screenwidth() // 2) - (ventana.winfo_width() // 2)
+    y = (ventana.winfo_screenheight() // 2) - (ventana.winfo_height() // 2)
+    ventana.geometry(f"+{x}+{y}")
+
+    ventana.mainloop()
+    return modelos_seleccionados
+
