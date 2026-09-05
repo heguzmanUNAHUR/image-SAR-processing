@@ -1,0 +1,24 @@
+# Entorno virtual y temporales de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+
+# Archivos de proyectos IDE (Spyder, VS Code, PyCharm)
+.spyproject/
+.spyderproject/
+.vscode/
+.idea/
+
+# Datos satelitales pesados y temporales intermedios (GeoTIFFs y respaldos)
+*.tif.backup
+aligned_temp/
+
+# Archivos de SO
+.DS_Store
+Thumbs.db

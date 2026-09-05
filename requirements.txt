@@ -1,0 +1,18 @@
+# Dependencias para el procesamiento de imágenes SAR y Teledetección
+
+# Procesamiento de imágenes y matrices
+opencv-python>=4.5.0
+numpy>=1.19.0
+pillow>=8.0.0
+pandas>=1.2.0
+
+# Georreferenciación y transformación de coordenadas
+rasterio>=1.2.0
+pyproj>=3.0.0
+
+# Visualización y graficación
+matplotlib>=3.3.0
+
+# Machine Learning y Modelos
+scikit-learn>=0.24.0
+joblib>=1.0.0
