@@ -70,6 +70,14 @@ $$\text{Normalized} = \text{clip}\left( \frac{\text{Post} - \text{Pre}}{\text{Po
 ### Trazabilidad de Muestras (`selected_zones.json`)
 Cada rectangulo delimitado por el operador $(x_1, y_1, x_2, y_2)$ se registra en un archivo JSON junto a su clasificacion y marca temporal, garantizando la reproducibilidad de la muestra.
 
+### 4.1. Interfaz Grafica de Seleccion Manual de Poligonos (ROIs)
+
+Durante la ejecucion del pipeline de la Fase 1, el sistema despliega una ventana interactiva de OpenCV que permite al operador seleccionar visualmente los rectangulos ROI sobre la cobertura SAR de retrodispersion.
+
+Cada region delimitada se etiqueta interactivamente en la consola como `Burned` (clase 1, recuadros rojos `#1`, `#2`, `#3`) o `Not_Burned` (clase 0, recuadros verdes `#4`, `#5`), registrando sus limites matriciales $(x_1, y_1, x_2, y_2)$ para la exportacion a vectores CSV y trazabilidad en `selected_zones.json`.
+
+![Seleccion interactiva de poligonos ROI sobre imagen SAR](images/roi_polygon_selection.png)
+
 ### Esquema del Dataset Tabulado
 Para cada pixel dentro de la region muestreada, se extraen los valores correspondientes de las 20 matrices de caracteristicas y se asigna la etiqueta de clasificacion.
 
