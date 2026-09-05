@@ -105,26 +105,39 @@ El archivo CSV resultante contiene exactamente **21 columnas**:
 
 La ejecucion del pipeline se realiza mediante el script principal `scripts/01_generate_dataset.py`.
 
-### Opcion A: Ejecucion de prueba por defecto (Dataset de muestra Ponton)
+### Opcion A: Ejecucion interactiva (Recomendado para uso general)
+
+Al ejecutar el script directamente sin parametros de linea de comandos, la consola solicitara de forma guiada los datos requeridos para la trazabilidad antes de desplegar la ventana de seleccion de regiones:
 
 ```bash
 python scripts/01_generate_dataset.py
 ```
 
-### Opcion B: Ejecucion para un nuevo incendio o zona de estudio
+**Prompts interactivos en consola**:
+1. `Ingrese el nombre identificador de la prueba para trazabilidad (por defecto 'Prueba_Muestra'):`
+   *Permite asignar un nombre personalizado (ej: `2026-09-05_Ponton_Exp01`) para aislar los resultados.*
+2. `Ingrese la cantidad de poligonos/zonas a seleccionar (por defecto 1):`
+   *Permite definir cuantos rectangulos ROI se marcaran interactivamente en la imagen.*
 
-Cualquier investigador puede procesar un incendio nuevo colocando las coberturas GeoTIFF en la estructura `data/raw/<nombre_incendio>/Images/Pre` y `Post`, y ejecutando:
+### Opcion B: Ejecucion parametrizada por linea de comandos (CLI)
+
+Para automatizar la ejecucion o procesar un incendio/experimento especifico sin prompts interactivos:
 
 ```bash
-python scripts/01_generate_dataset.py --proyecto "data/raw/Los_Alerces" --prueba "Prueba_Los_Alerces" --muestras 3
+python scripts/01_generate_dataset.py --proyecto "data/raw/Los_Alerces" --prueba "2026-09-05_LosAlerces_Exp01" --muestras 3
 ```
+
+**Parametros CLI disponibles**:
+- `--proyecto`: Ruta al directorio del incendio que contiene las carpetas `Images/Pre` e `Images/Post`.
+- `--prueba`: Nombre identificador de la prueba para trazabilidad de carpetas.
+- `--muestras`: Cantidad entera de poligonos a seleccionar.
 
 ### Estructura de Salida de Archivos
 
 Al completar la ejecucion de una prueba, el sistema genera la siguiente estructura en la carpeta de destino:
 
 ```text
-Prueba_Nombre/
+data/raw/<Incendio>/Pruebas/<Nombre_Prueba>/
 ├── csvs/
 │   ├── vectors_output_<x1>_<x2>_<y1>_<y2>_<clase>.csv
 │   └── datasetTotal_<proyecto>_<prueba>.csv

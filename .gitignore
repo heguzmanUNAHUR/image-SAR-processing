@@ -22,3 +22,7 @@ aligned_temp/
 # Archivos de SO
 .DS_Store
 Thumbs.db
+
+# Resultados de modelos e histogramas generados
+results/
+data/raw/*/Pruebas/

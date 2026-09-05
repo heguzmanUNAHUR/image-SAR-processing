@@ -110,16 +110,30 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Generacion de Dataset SAR para un Incendio Especifico")
     parser.add_argument('--proyecto', type=str, default=default_proyecto, help="Ruta a la carpeta del incendio")
     parser.add_argument('--prueba', type=str, default="Prueba_Muestra", help="Nombre de la prueba")
-    parser.add_argument('--muestras', type=int, default=1, help="Cantidad de zonas/poligonos a muestrear")
+    parser.add_argument('--muestras', type=int, default=None, help="Cantidad de zonas/poligonos a muestrear")
 
     args = parser.parse_args()
 
     proyecto_path = os.path.normpath(args.proyecto)
     matrices_path = os.path.join(proyecto_path, 'Matrixs')
-    muestras = args.muestras
+    
+    if args.prueba == "Prueba_Muestra":
+        prueba_input = input("Ingrese el nombre identificador de la prueba para trazabilidad (por defecto 'Prueba_Muestra'): ").strip()
+        prueba_name = prueba_input if prueba_input else "Prueba_Muestra"
+    else:
+        prueba_name = args.prueba
+
+    if args.muestras is None:
+        try:
+            val_input = input("Ingrese la cantidad de poligonos/zonas a seleccionar (por defecto 1): ").strip()
+            muestras = int(val_input) if val_input else 1
+        except Exception:
+            muestras = 1
+    else:
+        muestras = args.muestras
+
     capturas_img = os.path.join(proyecto_path, 'Images', 'Post', 'Band_Sigma0_VH_Post_Incendio.tif')
     pruebas_folder = os.path.join(proyecto_path, 'Pruebas', '')
-    prueba_name = args.prueba
     imagenes_folder = os.path.join(proyecto_path, 'Images', '')
 
     run_pipeline_generate_dataset(
